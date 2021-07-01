@@ -1,0 +1,16 @@
+[package]
+name = "imagerecognizer"
+version = "0.1.0"
+authors = ["wolfandreh <wolf-andre_hummel@live.de>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+image = "^0.23.14"
+ndarray = "^0.15.3"
+mnist = "^0.4.1"
+byteorder = "^1.4.3"
+rand = "^0.6.5"
+mindtree_utils = "^0.4"
+savefile = "^0.8"
