@@ -9,11 +9,13 @@ use rand::thread_rng;
 use rand::seq::SliceRandom;
 use utils::math::{sigmoid};
 
+
+#[derive(Savefile)]
 pub struct Network {
     pub sizes: Vec<u32>,
     pub num_layers: u32,
     pub biases: Vec<Vec<f64>>,
-    pub weights: Vec<Vec<Vec<f64>>>
+    pub weights: Vec<Vec<Vec<f64>>>,
 }
 
 impl Network {
@@ -87,6 +89,7 @@ impl Network {
         &mut self, 
         mut training_data: &Vec<Vec<Vec<f64>>>,
         epochs: &u32,
+        success_percentage: u32,
         mini_batch_size: &u32,
         eta: &f64,
         test_data: &Vec<(Vec<f64>, i32)>
@@ -95,14 +98,17 @@ impl Network {
         let mut td = training_data.clone();
 
         let n_test = test_data.len();
-        
-        for idx in 0..*epochs {
+
+        let mut idx = 0;
+        let mut accuracy: u32;
+
+        while idx < *epochs || idx != success_percentage {
             // Shuffle and slice training data by mini_batch_size
             td.shuffle(&mut thread_rng());
 
-            
+                        
             let mut mini_batches: Vec<Vec<Vec<Vec<f64>>>> = Vec::new();
-            
+
             for i in 0..*mini_batch_size {
                 let mut mb_holder: Vec<Vec<Vec<f64>>> = Vec::new();
                 for mb in td.chunks(*mini_batch_size as usize) {
@@ -117,10 +123,14 @@ impl Network {
             }
 
             // Print evaluation result
-            println!("Epoch {}: {} / {}", idx, self.evaluate(test_data), n_test);
+            let correct_images = self.evaluate(test_data);
+            accuracy = (correct_images / 100) as u32;
+            println!("Epoch {}: {} / {}", idx, correct_images, n_test);
 
             //println!("weights are: {:?}", self.weights[0][0]);
+            idx = idx + 1;
         }
+
     }
 
     fn feedforward(&self, a: &Vec<f64>) -> Vec<f64> {
