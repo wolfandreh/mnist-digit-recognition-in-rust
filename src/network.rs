@@ -100,9 +100,9 @@ impl Network {
         let n_test = test_data.len();
 
         let mut idx = 0;
-        let mut accuracy: u32;
+        let mut accuracy: u32 = 0;
 
-        while idx < *epochs || idx != success_percentage {
+        while idx <= *epochs || accuracy == success_percentage {
             // Shuffle and slice training data by mini_batch_size
             td.shuffle(&mut thread_rng());
 
@@ -133,7 +133,7 @@ impl Network {
 
     }
 
-    fn feedforward(&self, a: &Vec<f64>) -> Vec<f64> {
+    pub fn feedforward(&self, a: &Vec<f64>) -> Vec<f64> {
         // Takes and modifies an input image-vector and returns results
         // based on previously defined weights. 
         let mut updated_a = a.clone();
@@ -428,7 +428,7 @@ fn subtract_vec(a: &Vec<f64>, b: &Vec<f64>) -> Vec<f64> {
     temp
 }
 
-fn argmax(a: Vec<f64>) -> usize{
+pub fn argmax(a: Vec<f64>) -> usize{
     // Emulates the numpy argmax function which returns the index 
     // of the highest value in an array
     let mut index = 0;

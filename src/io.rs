@@ -2,11 +2,40 @@
 //#[macro_use]
 //extern crate ndarray;
 extern crate mnist;
-
 use mnist::{Mnist, MnistBuilder};
+use image::{DynamicImage, GrayImage, io::Reader as ImageReader};
 use ndarray::{Array2};
 use byteorder::{BigEndian, ReadBytesExt};
 use std::convert::TryInto;
+
+pub struct TestImages {
+    pub pixel_vector2d: Vec<f64>,
+}
+
+impl TestImages {
+
+    pub fn new(image_path: &str) -> Self {
+        let img: DynamicImage;
+
+        let import_buffer;
+
+        match ImageReader::open(image_path) {
+            Err(_) => {println!("Import failed!"); panic!()},
+            Ok(im_file) => import_buffer = im_file
+        }
+
+        match import_buffer.decode() {
+            Err(_) => {println!("Decode failed!"); panic!()},
+            Ok(img_import) => img = img_import
+        }
+
+        let gray: GrayImage = img.to_luma8();
+
+        Self {
+            pixel_vector2d: gray.to_vec().iter().map(|x| *x as f64 / 255.).collect()
+        }
+    }
+}
 
 pub struct TrainData {
     train_array_2d: Vec<Vec<f64>>,
